@@ -1,0 +1,28 @@
+#!/bin/bash --login
+#$ -cwd                   # Run job from directory where submitted
+
+# If running on a GPU, add:
+#$ -l v100=1
+
+#$ -pe smp.pe 8          # Number of cores on a single compute node. GPU jobs can
+                         # use up to 8 cores per GPU.
+
+# We now recommend loading the modulefile in the jobscript
+module load apps/binapps/pytorch/1.11.0-39-gpu
+
+# $NSLOTS is automatically set to the number of cores requested on the pe line.
+# Inform some of the python libraries how many cores we can use.
+export OMP_NUM_THREADS=$NSLOTS
+export PYTHONPATH=$PYTHONPATH:/mnt/iusers01/fatpou01/compsci01/s46926qz
+CUDA_LAUNCH_BLOCKING=1
+
+
+
+# python main_lstm.py
+# python feature_extration.py
+# python tran_esti_semi_regre.py
+python cal_empi_mse.py
+# python -m tran_esti_smi_N_K_Ds  --source_dataset  'imagenet' --target_dataset  'cifar_100'   --model_name  'resnet'  --model_dir  './output/imagenet/resnet18'    --work_dir  './output/cifar_100/resnet18_Ds_hub'   --num_classes 100  --rs  1.3528 --batch_size 32
+#for model resnet20
+# python -m tran_esti_semi --source_dataset  'cifar_10' --target_dataset  'cifar_100'   --model_name  'resnet20'  --model_dir  './output/cifar_10#/resnet20'  --work_dir  './output/cifar_100/resnet20/transfer_estimation'   --num_classes 100  --rs 0.3635
+# python -m tran_esti_semi  --source_dataset  'cifar_10' --target_dataset  'cifar_100'   --model_name  'resnet'  --model_dir  './output/cifar_10/resnet18/source_train_from_hub'  --work_dir  './output/cifar_100/resnet18/transfer_estimation'   --num_classes 100  --rs  0.8413 --batch_size 32
